@@ -113,8 +113,50 @@ make world
 
 ## 8. Dependencies
 
+```make
+b.txt: a.txt
+	cat a.txt > b.txt
 ```
 
+* `b.txt` depends on `a.txt`
+* The recipe runs only if:
+
+  * `b.txt` doesn’t exist, or
+  * `a.txt` is newer than `b.txt`
+
+## Execution detail
+
+For the command:
+
+```sh
+cat a.txt > b.txt
 ```
+
+The shell:
+
+1. Opens `b.txt` and truncates it
+2. Runs `cat a.txt` and writes into `b.txt`
+
+## Important edge case
+
+If input and output are the same file:
+
+```sh
+cat a.txt > a.txt
+```
+
+* File is truncated before reading
+* Result: empty file
+
+## Multiple dependencies
+
+```make
+out.txt: a.txt b.txt
+	cat a.txt b.txt > out.txt
+```
+
+Rebuilds if either dependency changes.
+
+
 
 # Intermediate
