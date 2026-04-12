@@ -14,4 +14,4 @@ run: main
 	./main
 
 clean:
-	rm -f main $(OBJ_FILES)
+	@rm -f main $(OBJ_FILES)

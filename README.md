@@ -626,3 +626,199 @@ make clean
 make -n
 ```
 
+---
+
+## Passing Values from Command Line
+
+```make id="xk0z1v"
+HELLO =
+
+$(info Value of HELLO is $(HELLO))
+```
+
+```bash id="c2h4qf"
+make HELLO=hello
+```
+
+Output:
+
+```bash id="0q1l8v"
+Value of HELLO is hello
+```
+
+---
+
+## Default Value (`?=`)
+
+```make id="xqk2e9"
+HELLO ?= 1
+
+$(info Value of HELLO is $(HELLO))
+```
+
+```bash id="7p1q5n"
+make HELLO=2
+```
+
+* Output:
+
+```bash id="3l7yqk"
+Value of HELLO is 2
+```
+
+```bash id="v0m3k2"
+make
+```
+
+* Output:
+
+```bash id="h2f9s1"
+Value of HELLO is 1
+```
+
+---
+
+## Use Case (Compiler Selection)
+
+```make id="p8n3t4"
+GCC ?= gcc
+
+$(info Compiler is $(GCC))
+```
+
+```bash id="r6m1c9"
+make GCC=arm-none-eabi-gcc
+```
+
+Output:
+
+```bash id="u3b7w2"
+Compiler is arm-none-eabi-gcc
+```
+
+---
+
+## Variable Override Behavior
+
+* `=` → always assign
+* `?=` → assign only if not already set
+
+---
+
+## Append (`+=`)
+
+### Overwrite
+
+```make id="d9m2k1"
+SRC = hello.c
+$(info Source file is $(SRC))
+
+SRC = world.c
+$(info Source file is $(SRC))
+```
+
+Output:
+
+```bash id="y4t8n6"
+Source file is hello.c
+Source file is world.c
+```
+
+---
+
+### Append
+
+```make id="k1p9v3"
+SRC = hello.c
+$(info Source file is $(SRC))
+
+SRC += world.c
+$(info Source file is $(SRC))
+```
+
+Output:
+
+```bash id="z8r2x5"
+Source file is hello.c
+Source file is hello.c world.c
+```
+
+---
+
+## Notes
+
+* Command line variables override Makefile variables
+* `?=` is useful for configurable defaults
+* `+=` appends to existing value instead of replacing
+
+---
+
+## Commands
+
+```bash id="n5c2x7"
+make
+make HELLO=hello
+make GCC=arm-none-eabi-gcc
+make -n
+```
+
+
+Clean and minimal.
+
+---
+
+## Multiline Variable (`define`)
+
+```make id="q7xk2v"
+define msg
+	echo "msg "
+	echo "msg from " $@
+endef
+
+one:
+	$(info $(msg))
+
+two:
+	$(info $(msg))
+```
+
+---
+
+## What this does
+
+* `define ... endef` → multiline variable
+* `$(msg)` expands to multiple lines
+
+---
+
+## Important
+
+* `$(info ...)` prints text only
+* Does NOT execute shell commands
+
+So output is just:
+
+```text
+echo "msg "
+echo "msg from " one
+```
+
+---
+
+## Correct way (to execute)
+
+```make id="m2k9d1"
+one:
+	$(msg)
+
+two:
+	$(msg)
+```
+
+---
+
+## Notes
+
+* `$@` → current target (`one`, `two`)
+* Use `define` for reusable command blocks
+* Use inside recipe, not `$(info)` for execution

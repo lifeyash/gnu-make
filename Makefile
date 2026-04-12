@@ -89,5 +89,32 @@
 
 
 # Executing shell command
-SRC = $(shell find -iname "*.c")
+# SRC = $(shell find -iname "*.c")
 # When file is renamed this solves the hassle of edit file
+
+# HELLO ?= 2
+
+# $(info Value of HELLO is $(HELLO))
+
+
+# SRC = hello.c
+# $(info Source file is $(SRC))
+# SRC = world.c
+# $(info Source file is $(SRC))
+
+
+# SRC = hello.c
+# $(info Source file is $(SRC))
+# SRC += world.c
+# $(info Source file is $(SRC))
+
+# define msg
+# 	echo "msg "
+# 	echo "msg from " $@
+# endef
+
+# one:
+# 	$(info $(msg))
+
+# two:
+# 	$(info $(msg))
