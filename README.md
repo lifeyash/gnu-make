@@ -510,3 +510,119 @@ make run
 make clean
 make -n
 ```
+
+---
+
+## Auto Source + Include Discovery
+
+```make id="d9a0v0"
+SRC = $(shell find . -iname "*.c")
+OBJ_FILES = $(patsubst %.c, %.o, $(SRC))
+
+INCLUDES = $(shell find . -iname "*.h" -exec dirname {} \; | sort -u | sed 's/^/-I/' | xargs)
+
+$(info $(SRC) $(OBJ_FILES) $(INCLUDES))
+
+main: $(OBJ_FILES)
+	gcc $^ -o $@
+
+%.o: %.c
+	gcc $(INCLUDES) -c $< -o $@
+
+run: main
+	./main
+
+clean:
+	rm -f main $(OBJ_FILES)
+```
+
+---
+
+## What this pattern does
+
+* Auto finds all `.c` files
+* Converts to `.o`
+* Auto finds header directories → builds `-I` flags
+* Compiles and links
+
+---
+
+## Key Expansions
+
+```make id="7x19qo"
+SRC        → ./src/main.c
+OBJ_FILES  → ./src/main.o
+INCLUDES   → -I./include/magic -I./include/magic2
+```
+
+---
+
+## Shell Breakdown
+
+### SRC
+
+```sh id="6i6k4v"
+find . -iname "*.c"
+```
+
+* Search recursively for `.c` files
+
+---
+
+### INCLUDES pipeline
+
+```sh id="gfe56k"
+find . -iname "*.h"
+```
+
+* find header files
+
+```sh id="7hhfrs"
+-exec dirname {} \;
+```
+
+* get directory of each header
+
+```sh id="mj1yju"
+sort -u
+```
+
+* remove duplicates
+
+```sh id="uxbq1m"
+sed 's/^/-I/'
+```
+
+* prefix `-I`
+
+```sh id="qgk8vd"
+xargs
+```
+
+* merge into single line
+
+Final:
+
+```sh id="4q46j6"
+-I./include/magic -I./include/magic2
+```
+
+---
+
+## Notes
+
+* `$^` → all `.o` files
+* `$<` → current `.c` file
+* `$(info ...)` → prints values before execution
+
+---
+
+## Commands
+
+```bash id="g3dt2u"
+make
+make run
+make clean
+make -n
+```
+
